@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Text Editor - Lit Element</title>
+</head>
+<body>
+<h1>Rich Text Editor Qill - Lit Element Demo</h1>
+
+<h3>Basic Editor</h3>
+<rich-text-editor-qill></rich-text-editor-qill>
+
+<div style="margin-top: 20px;">
+    <button onclick="testEditor()">Test Editor API</button>
+    <button onclick="getContent()">Get Content</button>
+    <button onclick="setContent()">Set Content</button>
+</div>
+
+<h3>Quill HTML Viewer</h3>
+<div style="margin-top: 20px;">
+    <button onclick="loadFromGitHub()">Load from GitHub</button>
+    <button onclick="previewEditorContent()">View Content From Editor</button>
+    <button onclick="clearViewer()">Clear Viewer</button>
+</div>
+
+<div style="margin-top: 10px; padding: 10px; border: 1px solid #ccc; min-height: 200px;">
+    <quill-html-viewer id="contentViewer"></quill-html-viewer>
+</div>
+
+<div id="output" style="margin-top: 20px; padding: 10px; background: #f0f0f0; display: none;">
+    <h4>Output:</h4>
+    <pre id="content"></pre>
+</div>
+
+<script type="module" src="/src/rich-text-editor-qill.ts"></script>
+<script type="module" src="/src/quill-html-viewer.ts"></script>
+
+<script>
+    function testEditor() {
+        const editor = document.querySelector('rich-text-editor-qill');
+        editor.focus();
+        showOutput('Editor focused');
+    }
+
+    function getContent() {
+        const editor = document.querySelector('rich-text-editor-qill');
+        const html = editor.getValue();
+        const text = editor.getPlainText();
+        showOutput(`HTML: ${html}\n\nPlain Text: ${text}`);
+    }
+
+    function setContent() {
+        const editor = document.querySelector('rich-text-editor-qill');
+        editor.setValue('<h2>New Content</h2><p>This was set via <strong>JavaScript API</strong>!</p>');
+        showOutput('Content updated via API');
+    }
+
+    // Quill HTML Viewer functions
+    async function loadFromGitHub() {
+        const viewer = document.getElementById('contentViewer');
+        try {
+            // Use raw GitHub URL to access the actual file content
+            await viewer.setS3Url('https://raw.githubusercontent.com/letrthang/static_photos/main/html/quill-html-sample-content.html');
+            showOutput('Loading content from GitHub...');
+        } catch (error) {
+            showOutput('Error loading from GitHub: ' + error.message);
+        }
+    }
+
+    function previewEditorContent() {
+        const editor = document.querySelector('rich-text-editor-qill');
+        const viewer = document.getElementById('contentViewer');
+
+        // Get HTML content from editor (returns Quill HTML with classes)
+        const htmlContent = editor.getValue();
+
+        // Set content directly (not from URL)
+        viewer.content = htmlContent;
+        showOutput('Editor content previewed in viewer');
+    }
+
+    function clearViewer() {
+        const viewer = document.getElementById('contentViewer');
+        viewer.clearContent();
+        showOutput('Viewer content cleared');
+    }
+
+    function showOutput(content) {
+        document.getElementById('content').textContent = content;
+        document.getElementById('output').style.display = 'block';
+    }
+
+    // Listen for editor changes
+    document.addEventListener('value-changed', (event) => {
+        console.log('Editor changed:', event.detail);
+    });
+
+    // Listen for viewer events
+    document.addEventListener('content-loaded', (event) => {
+        console.log('Content loaded in viewer:', event.detail);
+        showOutput('Content successfully loaded from: ' + event.detail.url);
+    });
+
+    document.addEventListener('content-error', (event) => {
+        console.error('Viewer error:', event.detail);
+        showOutput('Error loading content: ' + event.detail.error);
+    });
+</script>
+</body>
+</html>

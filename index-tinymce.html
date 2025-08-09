@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyMCE Rich Text Editor - Lit Element</title>
+</head>
+<body>
+<h1>TinyMCE Rich Text Editor - Lit Element Demo</h1>
+
+<h3>Basic TinyMCE Editor</h3>
+<rich-text-editor-tinymce
+        id="editor1"
+        placeholder="Start typing your content here...">
+</rich-text-editor-tinymce>
+
+<div style="margin-top: 20px;">
+    <button onclick="getContent()">Get HTML Content</button>
+    <button onclick="setContent()">Set Sample Content</button>
+    <button onclick="clearContent()">Clear Content</button>
+</div>
+
+<div id="output" style="margin-top: 20px; padding: 10px; background: #f0f0f0; display: none;">
+    <h4>Output:</h4>
+    <pre id="content" style="white-space: pre-wrap;"></pre>
+</div>
+
+<script type="module" src="/src/rich-text-editor-tinymce.ts"></script>
+
+<script>
+    function getContent() {
+        const editor = document.getElementById('editor1');
+        const content = editor.getValue();
+        showOutput(`HTML Content:\n${content}`);
+    }
+
+    function setContent() {
+        const editor = document.getElementById('editor1');
+        const sampleContent = `<p><strong>Hello</strong> <em>World</em>!</p><p style="text-align: center;">This is <span style="color: red;">colored</span> text.</p>`;
+        editor.setValue(sampleContent);
+        showOutput('Content set!');
+    }
+
+    function clearContent() {
+        const editor = document.getElementById('editor1');
+        editor.setValue('');
+        showOutput('Content cleared!');
+    }
+
+    function showOutput(content) {
+        document.getElementById('content').textContent = content;
+        document.getElementById('output').style.display = 'block';
+    }
+</script>
+</body>
+</html>
