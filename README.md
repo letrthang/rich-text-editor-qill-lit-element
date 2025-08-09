@@ -3,3 +3,5 @@ Qilljs (https://quilljs.com/) rich text editor web compnent using lit-element (h
 1. install libs: `npm install`
   
 2. start server: `npm run dev`
+
+3. access home page at: `http://localhost:3000/`
